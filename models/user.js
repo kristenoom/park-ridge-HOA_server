@@ -10,7 +10,21 @@ const User = db.define("user", {
   passwordhash: {
     type: DataTypes.STRING,
     allowNull: false,
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
   },
+    address: {
+        type: DataTypes.STRING(30),
+        allowNull: false,
+        unique: true
+    },
+    IsAdmin: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
+    }
 });
 
 module.exports = User;

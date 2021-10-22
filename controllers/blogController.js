@@ -1,23 +1,20 @@
 const router = require('express').Router();
 const validateSession = require('../middleware/validate-session');
 const sequelize = require('../db');
-const Home = require("../db").import('../models/home');
+const Blog = require("../db").import('../models/blog');
 
 /* ***************************
 ***** CREATE HOME ENTRY *****
 *************************** */
 router.post('/create', validateSession, (req, res) => {
-    const homeEntryByUser = {
-        address: req.body.address, 
-        squareFootage: req.body.squareFootage,
-        bedroom: req.body.bedroom,
-        bathroom: req.body.bathroom,
-        garage: req.body.garage,
-        acreage: req.body.acreage
+    const blogEntryByUser = {
+        title: req.body.title,
+        content: req.body.content,
+        keywords: req.body.keywords
     };
 
-    Home.create(homeEntryByUser)
-        .then(home => res.status(200).json(home))
+    Blog.create(blogEntryByUser)
+        .then(blog => res.status(200).json(blog))
         .catch((err) => res.status(500).json({error:err}));
 
 });
@@ -25,15 +22,15 @@ router.post('/create', validateSession, (req, res) => {
 /* **************************
 ***** RETURN HOME ENTRY *****
 ************************** */
-router.get('/home', (req, res) => {
+router.get('/blog', (req, res) => {
     const query = {
         where: {
             id: req.user.id
         }
     };
 
-    Home.findAll(query)
-    .then((home) => res.status(200).json(home))
+    Blog.findAll(query)
+    .then((blog) => res.status(200).json(blog))
     .catch((err) => res.status(500).json({error: err}));
 });
 
@@ -41,15 +38,15 @@ router.get('/home', (req, res) => {
 *****  RETURN HOME ENTRY *****
 ***** BY INDIVIDUAL USER *****
 *************************** */
-router.get('/home/:id', (req, res) => {
+router.get('/blog/:id', (req, res) => {
     const query = {
         where: {
             id: req.params.id
         }
     };
 
-    Home.findUserEntry(query)
-    .then((home) => res.status(200).json(home))
+    Blog.findUserEntry(query)
+    .then((blog) => res.status(200).json(blog))
     .catch((err) => res.status(500).json({error: err}));
 
 });
@@ -57,15 +54,15 @@ router.get('/home/:id', (req, res) => {
 /* **************************
 ***** DELETE HOME ENTRY *****
 ************************** */
-router.delete('/home/:id', validateSession, (req, res) => {
+router.delete('/blog/:id', validateSession, (req, res) => {
     const query = {
         where: {
             id: req.params.id
         }
     };
 
-    Home.destroy(query)
-    .then(() => res.status(200).json({ message: "Home removed" }))
+    Blog.destroy(query)
+    .then(() => res.status(200).json({ message: "Blog removed" }))
     .catch((err) => res.status(500).json({ error: err }));
 });
 
@@ -74,12 +71,10 @@ router.delete('/home/:id', validateSession, (req, res) => {
 ***** UPDATE HOME ENTRY *****
 ************************** */
 router.put('/:id', validateSession, (req, res) => {
-    const updateHome = { 
-        squareFootage: req.body.squareFootage,
-        bedroom: req.body.bedroom,
-        bathroom: req.body.bathroom,
-        garage: req.body.garage,
-        acreage: req.body.acreage
+    const updateBlog = { 
+        title: req.body.title,
+        content: req.body.content,
+        keywords: req.body.keywords
     };
 
     const query = {
@@ -88,8 +83,8 @@ router.put('/:id', validateSession, (req, res) => {
         }
     };
 
-    Home.update(updateHome, query)
-        .then((home) => res.status(200).json(home))
+    Blog.update(updateBlog, query)
+        .then((blog) => res.status(200).json(blog))
         .catch((err) => res.status(500).json({ error: err.message}));
 });
 

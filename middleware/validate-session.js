@@ -4,7 +4,7 @@ const { User } = require("../models");
 const validateSession = (req, res, next) => {
   // Build your validation for token here
   const token = req.headers.authorization;
-  console.log('token -->', token);
+  console.log('token --> ', token);
   if(!token) {
       return res.status(403).send({auth: false, message: 'No token provided'})
   } else {
@@ -18,9 +18,9 @@ const validateSession = (req, res, next) => {
                   }
               })
               .then((user) => {
-                  console.log('user -->', user);
+                  console.log('user --> ', user);
                   if (!user) throw err;
-                  console.log('req -->', req);
+                  console.log('req --> ', req);
                   req.user = user;
                   return next()
               })
