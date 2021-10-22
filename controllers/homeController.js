@@ -1,4 +1,4 @@
-const router = require('express').Router();
+let router = require('express').Router();
 const validateSession = require('../middleware/validate-session');
 const sequelize = require('../db');
 const Home = require("../db").import('../models/home');
@@ -7,7 +7,8 @@ const Home = require("../db").import('../models/home');
 ***** CREATE HOME ENTRY *****
 *************************** */
 router.post('/create', validateSession, (req, res) => {
-    const homeEntryByUser = {
+    console.log(req.user.id);
+    const homeEntry = {
         address: req.body.address, 
         squareFootage: req.body.squareFootage,
         bedroom: req.body.bedroom,
@@ -16,8 +17,8 @@ router.post('/create', validateSession, (req, res) => {
         acreage: req.body.acreage
     };
 
-    Home.create(homeEntryByUser)
-        .then(home => res.status(200).json(home))
+    Home.create(homeEntry)
+        .then((home) => res.status(200).json(home))
         .catch((err) => res.status(500).json({error:err}));
 
 });
@@ -25,11 +26,13 @@ router.post('/create', validateSession, (req, res) => {
 /* **************************
 ***** RETURN HOME ENTRY *****
 ************************** */
-router.get('/home', (req, res) => {
+router.get('/home', (req, res) => { //we do not need to validateSession as we want all users to be able to access details
+    console.log(`GET` + req.user.id);
     const query = {
         where: {
-            id: req.user.id
-        }
+            id: req.user.id,
+        },
+        include: "user"
     };
 
     Home.findAll(query)

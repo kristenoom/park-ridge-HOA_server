@@ -1,8 +1,18 @@
 const User = require("./user");
-// create individual files for your models and import them here
+const Home = require("./home");
+const Arc = require("./arc");
+const Blog = require("./blog");
 
-// Setup Associations
+// Associations
+User.hasOne(Home);
+Home.belongsTo(User);
+
+User.hasMany(Arc);
+Arc.belongsTo(User);
+
+User.hasMany(Blog);
+Blog.belongsTo(User);
 
 module.exports = {
-  User,
+    User, Home, Arc, Blog
 };

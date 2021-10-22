@@ -1,8 +1,7 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db");
-// Example UserTable Build this out Need more columns add it here
+
 const Arc = db.define("arc", {
-  
     address: {
         type: DataTypes.STRING,
         allowNull: false

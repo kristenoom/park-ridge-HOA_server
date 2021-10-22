@@ -1,70 +1,85 @@
+let router = require('express').Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { Router } = require("express");
+
 const { User } = require("../models");
 const validateSession = require("../middleware/validate-session");
 
 const router = Router();
 
 /* REGISTER A NEW USER */
-router.post("/create", async function (req, res) {
-  try{
-      User.create({
-          username: req.body.user.username,
-          passwordHash: bcrypt.hashSync(req.body.user.password, 13)
-      })
-        .then(
-            function createSuccess(user) {
-                let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 })
-                res.status(200).json({
-                    user: user,
-                    message: "User successfully created",
-                    sessionToken: token
-                })
-        }
-      )
-  }catch(e){
-    res.status(500).json({message: e.message})
-  }
- 
+router.post("/create", (req, res) => {
+    User.create({
+        username: req.body.user.username,
+        name: req.body.user.name,
+        address: req.body.user.address,
+        passwordHash: bcrypt.hashSync(req.body.user.password, 13)
+    })
+    .then(
+        createSuccess = (user) => {
+            let token = jwt.sign({
+                id: user.id
+            }, process.env.JWT_SECRET, {
+                expiresIn: 60 * 60 * 24
+            })
+            res.status(200).json({
+                user: user,
+                message: "User successfully created",
+                sessionToken: token
+            });
+    })
+    res.status(500).json({ error: err });
 });
 
 /* USER LOGIN */
-router.post("/login", async function (req, res) {
-    try {
-        User.findOne({
-            where: {
-                username: req.body.user.username
-            }
-        })
-        .then(function loginSuccess(user){
-            if (user){
-                bcrypt.compare(
-                    req.body.user.passwordHash,
-                    user.passwordHash,
-                    (err, matches) => {
-                        if (matches) {
-                            let token = jwt.sign({id: user.id},
-                            process.env.JWT_SECRET, {
-                                expiresIn: 60 * 60 * 24, 
-                            });
-                        res.status(200).json({
-                            user: user,
-                            message: 'User successfully logged in!',
-                            sessionToken: token,
-                        });
-                        } else {
-                            res.status(502).send({error: 'Login failed'}) //incorrect login password.
-                        }
-                    }
+router.post("/login", (req, res) => {
+    User.findOne({
+        where: {
+          address: req.body.address,
+        },
+      })
+        .then(function loginSuccess(user) {
+          if (user) {
+            bcrypt.compare(req.body.passwordhash, user.passwordhash, function (
+              err,
+              matches
+            ) {
+              if (matches) {
+                  let token = jwt.sign({
+                      id: user.id,
+                      username: user.username
+                  }, process.env.JWT_SECRET, {
+                    expiresIn: 60 * 60 * 24,
+                  }
                 );
-            } else {
-                res.status(500).json({error: 'User does not exist.'});
-            }
+                res.status(200).json({
+                  user: user,
+                  message: "User Successfully Logged in!",
+                  sessionToken: token,
+                });
+              } else {
+                res.status(502).send({ error: "Login Failed" });
+              }
+            });
+          } else {
+            res.status(500).json({ error: "User does not exist" });
+          }
         })
-    } catch (e) {
-    res.status(500).json({message: e.message})
-  }
+        .catch((err) => res.status(500).json({ error: err }));
+    });
+
+router.get("/get", (req, res) => {
+    User.findAll({
+        where: { id: 1 },
+        include: ["home"]
+    }).then(
+        findOneSuccess = (data) => {
+        res.json(data);
+    },
+    findOneError = (err) => {
+    res.send(500, err.message);
+    }
+    );
 });
 
 module.exports = router;
