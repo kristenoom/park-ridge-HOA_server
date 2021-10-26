@@ -3,7 +3,7 @@ const db = require("../db");
  
 const User = db.define("user", {
     username: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(6),
         allowNull: false,
         unique: true,
     },

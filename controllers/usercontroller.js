@@ -5,18 +5,17 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 const validateSession = require("../middleware/validate-session");
 
-const router = Router();
-
 /* REGISTER A NEW USER */
 router.post("/create", (req, res) => {
     User.create({
         username: req.body.user.username,
         name: req.body.user.name,
         address: req.body.user.address,
-        passwordHash: bcrypt.hashSync(req.body.user.password, 13)
+        passwordhash: bcrypt.hashSync(req.body.user.passwordhash, 13),
+        IsAdmin: req.body.user.IsAdmin
     })
     .then(
-        createSuccess = (user) => {
+        function createSuccess(user) {
             let token = jwt.sign({
                 id: user.id
             }, process.env.JWT_SECRET, {
@@ -28,7 +27,7 @@ router.post("/create", (req, res) => {
                 sessionToken: token
             });
     })
-    res.status(500).json({ error: err });
+    .catch(err => res.status(500).json({error: err}))
 });
 
 /* USER LOGIN */

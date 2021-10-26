@@ -1,7 +1,6 @@
 let router = require('express').Router();
 const validateSession = require('../middleware/validate-session');
-const sequelize = require('../db');
-const Blog = require("../db").import('../models/blog');
+const {Blog} = require("../models")
 
 /* ***************************
 ***** CREATE HOME ENTRY *****

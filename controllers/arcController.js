@@ -1,7 +1,6 @@
 let router = require('express').Router();
 const validateSession = require('../middleware/validate-session');
-const sequelize = require('../db');
-const Arc = require("../db").import('../models/arc');
+const { Arc } = require("../models")
 
 /* ***************************
 ***** CREATE ARC ENTRY *****
