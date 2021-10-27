@@ -34,7 +34,8 @@ router.post("/create", (req, res) => {
 router.post("/login", (req, res) => {
     User.findOne({
         where: {
-          address: req.body.address,
+            username: req.body.username,
+        //  address: req.body.address,
         },
       })
         .then(function loginSuccess(user) {

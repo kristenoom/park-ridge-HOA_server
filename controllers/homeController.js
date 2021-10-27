@@ -8,12 +8,13 @@ const { Home } = require("../models")
 router.post('/create', validateSession, (req, res) => {
     console.log(req.user.id);
     const homeEntry = {
-        address: req.body.address, 
-        squareFootage: req.body.squareFootage,
-        bedroom: req.body.bedroom,
-        bathroom: req.body.bathroom,
-        garage: req.body.garage,
-        acreage: req.body.acreage
+        address: req.body.home.address, 
+        squareFootage: req.body.home.squareFootage,
+        bedroom: req.body.home.bedroom,
+        bathroom: req.body.home.bathroom,
+        garage: req.body.home.garage,
+        acreage: req.body.home.acreage,
+        userId: req.user.id
     };
 
     Home.create(homeEntry)
@@ -26,15 +27,15 @@ router.post('/create', validateSession, (req, res) => {
 ***** RETURN HOME ENTRY *****
 ************************** */
 router.get('/home', (req, res) => { //we do not need to validateSession as we want all users to be able to access details
-    console.log(`GET` + req.user.id);
-    const query = {
-        where: {
-            id: req.user.id,
-        },
-        include: "user"
-    };
+    //console.log(`GET` + req.user.id);
+    // const query = {
+    //     where: {
+    //         id: req.user.id,
+    //     },
+    //     include: "user"
+    // };
 
-    Home.findAll(query)
+    Home.findAll()
     .then((home) => res.status(200).json(home))
     .catch((err) => res.status(500).json({error: err}));
 });
@@ -46,7 +47,8 @@ router.get('/home', (req, res) => { //we do not need to validateSession as we wa
 router.get('/home/:id', (req, res) => {
     const query = {
         where: {
-            id: req.params.id
+            id: req.params.id,
+            userId: req.user.userId
         }
     };
 

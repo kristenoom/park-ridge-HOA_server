@@ -17,7 +17,7 @@ const Home = db.define("home", {
         allowNull: false
     },
     bathroom: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     },
     garage: {
@@ -25,7 +25,7 @@ const Home = db.define("home", {
         allowNull: false
     },
     acreage: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     },
 });
